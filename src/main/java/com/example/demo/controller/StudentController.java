@@ -2,6 +2,7 @@ package com.example.demo.controller;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.entity.Student;
@@ -22,52 +24,89 @@ import com.example.demo.service.StudentService;
 public class StudentController {
 	@Autowired
 	private StudentService service;
-	
-	@PostMapping("/save")
-	public ResponseEntity<Student>saveStudent(@RequestBody Student s){
-		Student std=service.saveStudent(s);
-		return ResponseEntity.status(201).body(std);
+
+	@GetMapping("/getids")
+	public ResponseEntity<List<Integer>>getIds(){
+		List<Integer>ids=service.getIds();
+		return ResponseEntity.ok(ids);
 	}
 	
-	@GetMapping("/all")
-	public ResponseEntity<List<Student>> getallStudents(){
-		List<Student>list=service.getAllStudents();
-		return ResponseEntity.ok(list);
+	@GetMapping("/getall")
+	public ResponseEntity<List<Student>>getAll(){
+		List<Student> li=service.getAll();
+		return ResponseEntity.ok(li);
 	}
 	
-	@GetMapping("/find/{id}")
-	public ResponseEntity<Student>findById(@PathVariable int id){
-		Optional<Student> s=service.findById(id);
-		if(s.isPresent()) {
-			return ResponseEntity.ok(s.get());
+	@GetMapping("get/{id}")
+	public ResponseEntity<Student>getById(@PathVariable int id){
+		Optional<Student>op=service.getById(id);
+		if(op.isPresent()) {
+			return ResponseEntity.ok(op.get());
 		}else {
 			return ResponseEntity.notFound().build();
 		}
 	}
 	
-	@DeleteMapping("/delete/{id}")
-	public ResponseEntity<String> deleteById(@PathVariable int id) {
-		Optional<Student>op=service.deleteById(id);
+	@GetMapping("getcity")
+	public ResponseEntity<List<Student>>getByCity(@RequestParam String city){
+		List<Student>li=service.getByCity(city);
+		return ResponseEntity.ok(li);
+	}
+	
+	@GetMapping("getNames")
+	public ResponseEntity<List<String>>getNames(){
+		List<String> name=service.getNames();
+		return ResponseEntity.ok(name);
+	}
+	
+	@GetMapping("count")
+	public ResponseEntity<Long>countData(){
+		Long count=service.countData();
+		return ResponseEntity.ok(count);
+	}
+	
+	@GetMapping("search")
+	public ResponseEntity<List<Student>>searchData(@RequestParam String name,@RequestParam String city){
+		List<Student>li=service.searchData(name,city);
+		return ResponseEntity.ok(li);
+	}
+	
+	@GetMapping("getcities")
+	public ResponseEntity<Set<String>> getCities(){
+		Set<String>s=service.getCities();
+		return ResponseEntity.ok(s);
+	}
+	
+	@PostMapping("insert")
+	public ResponseEntity<Student>insertData(@RequestBody Student std){
+		Student s=service.insertData(std);
+		return ResponseEntity.status(201).body(s);
+	}
+	
+	@PutMapping("update/{id}")
+	public ResponseEntity<Student>updateById(@PathVariable int id,@RequestBody Student std){
+		Optional<Student>op=service.updateById(id,std);
 		if(op.isPresent()) {
-			return ResponseEntity.ok("Deleted Successfully");
+			return ResponseEntity.ok(op.get());
 		}else {
-			return ResponseEntity.status(404).body("Not found");
+			return ResponseEntity.notFound().build();
 		}
 	}
 	
-	@PutMapping("/update")
-	public ResponseEntity<Student>updateStudent(@RequestBody Student s){
-		Student std=service.updateStudent(s);
-		return ResponseEntity.ok(std);
+	@PutMapping("update/{id}")
+	public ResponseEntity<Student>updateCity(@PathVariable int id,@RequestBody Student std){
+		Optional<Student>op=service.updateCity(id,std);
+		if(op.isPresent()) {
+			return ResponseEntity.ok(op.get());
+			}else {
+				return ResponseEntity.notFound().build();
+			}	
+		}
+	
+	@DeleteMapping("delete/{id}")
+	public ResponseEntity<String>deleteById(@PathVariable int id){
+	     service.deleteById(id);
+	     return ResponseEntity.ok("Deleted Successfully");
 	}
-	
-	
-	@GetMapping("/city/{city}")
-	public ResponseEntity<List<Student>>findByCity(@PathVariable String city){
-		List<Student>l=service.findByCity(city);
-		return ResponseEntity.ok(l);
-	}
-	
-	
 	
 }

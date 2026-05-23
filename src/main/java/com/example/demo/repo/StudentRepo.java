@@ -10,6 +10,7 @@ import com.example.demo.entity.Student;
 @Repository
 public interface StudentRepo extends JpaRepository<Student, Integer>{
 
-	List<Student> findByCity(String city);
+
+
 
 }
